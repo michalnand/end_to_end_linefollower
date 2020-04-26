@@ -15,7 +15,7 @@ nets_to_try = 10
 for net in range(nets_to_try):
 
     epoch_count     = 30
-    learning_rates  = [0.001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.00001, 0.00001]
+    learning_rates  = [0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.00001, 0.00001]
 
     model = Model(dataset.training.input_shape, dataset.training.outputs_count)
 
