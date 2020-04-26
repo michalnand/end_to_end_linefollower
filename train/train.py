@@ -21,7 +21,7 @@ for net in range(nets_to_try):
 
     for epoch in range(epoch_count):
         
-        batch_size  = 256
+        batch_size  = 32 
         batch_count = (dataset.training.get_count()+batch_size) // batch_size
 
         learning_rate = learning_rates[epoch%len(learning_rates)]
