@@ -3,7 +3,7 @@ from models.net_0.model import Model
 import torch
 
 
-dataset = Dataset(96, 96, 100000, 10000)
+dataset = Dataset(96, 96, 200000, 10000)
 
 
 
@@ -15,13 +15,13 @@ nets_to_try = 10
 for net in range(nets_to_try):
 
     epoch_count     = 30
-    learning_rates  = [0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.00001, 0.00001]
+    learning_rates  = [0.001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.00001, 0.00001]
 
     model = Model(dataset.training.input_shape, dataset.training.outputs_count)
 
     for epoch in range(epoch_count):
         
-        batch_size  = 128
+        batch_size  = 256
         batch_count = (dataset.training.get_count()+batch_size) // batch_size
 
         learning_rate = learning_rates[epoch%len(learning_rates)]
