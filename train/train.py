@@ -9,7 +9,7 @@ model = Model(dataset.training.input_shape, dataset.training.outputs_count)
 
 import torch
 
-epoch_count = 500
+epoch_count = 100
 learning_rates = [0.0001, 0.0001, 0.0001, 0.0001, 0.00001]
 
 testing_loss_sum_best = None
