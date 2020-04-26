@@ -36,6 +36,8 @@ class Model(torch.nn.Module):
                         nn.ReLU(), 
                        
                         Flatten(), 
+                        nn.Dropout(0.05),
+
                         nn.Linear(32*fc_inputs_count, outputs_count)
                     ]
 
