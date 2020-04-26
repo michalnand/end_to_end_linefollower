@@ -9,14 +9,14 @@ model = Model(dataset.training.input_shape, dataset.training.outputs_count)
 
 import torch
 
-epoch_count = 100
-learning_rates = [0.0001, 0.0001, 0.0001, 0.0001, 0.00001]
+epoch_count = 30
+learning_rates = [0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.00001]
 
 testing_loss_sum_best = None
 
 for epoch in range(epoch_count):
     
-    batch_size  = 32
+    batch_size  = 64
     batch_count = (dataset.training.get_count()+batch_size) // batch_size
 
     learning_rate = learning_rates[epoch%len(learning_rates)]

@@ -36,7 +36,8 @@ class Model(torch.nn.Module):
                         nn.ReLU(), 
                        
                         Flatten(), 
-                        nn.Dropout(0.05),
+                        
+                        nn.Dropout(0.01),
 
                         nn.Linear(32*fc_inputs_count, outputs_count)
                     ]
@@ -62,6 +63,6 @@ class Model(torch.nn.Module):
         name = path + "trained/model.pt"
         print("loading", name)
 
-        self.model.load_state_dict(torch.load(name))
+        self.model.load_state_dict(torch.load(name, map_location = self.device))
         self.model.eval() 
     
