@@ -10,18 +10,18 @@ dataset = Dataset(96, 96, 100000, 10000)
 
 testing_loss_sum_best = None
 
-nets_to_try = 100
+nets_to_try = 10
 
 for net in range(nets_to_try):
 
-    epoch_count     = 20
+    epoch_count     = 30
     learning_rates  = [0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.00001, 0.00001]
 
     model = Model(dataset.training.input_shape, dataset.training.outputs_count)
 
     for epoch in range(epoch_count):
         
-        batch_size  = 32
+        batch_size  = 128
         batch_count = (dataset.training.get_count()+batch_size) // batch_size
 
         learning_rate = learning_rates[epoch%len(learning_rates)]
