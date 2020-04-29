@@ -1,5 +1,5 @@
 from dataset import Dataset
-from models.net_0.model import Model
+from models.net_1.model import Model
 import torch
 
 

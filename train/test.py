@@ -31,7 +31,7 @@ model = Model(dataset.training.input_shape, dataset.training.output_shape[0])
 
 model.load("models/net_0/")
 
-batch_size = 4
+batch_size = 10
 
 
 
