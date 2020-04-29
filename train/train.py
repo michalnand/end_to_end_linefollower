@@ -6,13 +6,13 @@ import torch
 #root_path = "/Users/michal/dataset/background/"
 root_path = "/home/michal/dataset/background/"
 
-dataset = Dataset(96, 96, 10000, 5000, root_path)
+dataset = Dataset(96, 96, 100000, 5000, root_path)
 
 
 
 testing_loss_sum_best = None
 
-nets_to_try = 1
+nets_to_try = 10
 
 for net in range(nets_to_try):
 

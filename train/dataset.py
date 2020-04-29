@@ -1,5 +1,6 @@
 import sys
 sys.path.insert(0, "/Users/michal/programming/ml_libs/")
+sys.path.insert(0, "/home/michal/programming/ml_libs/")
 
 from libs_dataset.line_dataset_advanced import *
 
