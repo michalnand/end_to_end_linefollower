@@ -25,6 +25,7 @@ def get_net_input(image):
         resized = cv2.resize(image, (width, height), interpolation = cv2.INTER_AREA)
         input_np = numpy.array(resized)
 
+        '''
         input_max = 255
         input_min = 0
 
@@ -32,8 +33,9 @@ def get_net_input(image):
         q = 1.0 - k*input_max
 
         input_normalised = k*input_np + q
+        '''
 
-        input_normalised = numpy.clip(input_normalised, 0, 1)
+        input_normalised = numpy.clip(input_np/255.0, 0, 1)
 
         result = torch.zeros((1, 1, height, width))
         result[0][0] = torch.from_numpy(input_normalised)
@@ -58,10 +60,10 @@ while(True):
 
 
     x0 = position_x0
-    y0 = 0
+    y0 = input_height
 
     x1 = position_x1
-    y1 = input_height
+    y1 = input_height//2
 
     cv2.line(img, (x0, y0), (x1, y1), (255), 4)
     cv2.imshow('frame', img)

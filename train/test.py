@@ -5,6 +5,8 @@ import numpy
 
 from PIL import Image, ImageDraw
 
+root_path = "/Users/michal/dataset/background/"
+#root_path = "/home/michal/dataset/background/"
 
 def show(input, output):
     image = Image.fromarray(input[0]*255)
@@ -22,7 +24,7 @@ def show(input, output):
 
 
 size = 96
-dataset = Dataset(size, size, 100, 100)
+dataset = Dataset(size, size, 100, 100, root_path)
 
 
 model = Model(dataset.training.input_shape, dataset.training.output_shape[0])
