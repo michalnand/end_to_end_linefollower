@@ -3,25 +3,27 @@ from models.net_0.model import Model
 import torch
 
 
-dataset = Dataset(96, 96, 100000, 1000)
+#root_path = "/Users/michal/dataset/background/"
+root_path = "/home/michal/dataset/background/"
 
+dataset = Dataset(96, 96, 10000, 5000, root_path)
 
 
 
 testing_loss_sum_best = None
 
-nets_to_try = 10
+nets_to_try = 1
 
 for net in range(nets_to_try):
 
     epoch_count     = 30
     learning_rates  = [0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.00001, 0.00001]
 
-    model = Model(dataset.training.input_shape, dataset.training.outputs_count)
+    model = Model(dataset.training.input_shape, dataset.training.output_shape[0])
 
     for epoch in range(epoch_count):
         
-        batch_size  = 128 
+        batch_size  = 32 
         batch_count = (dataset.training.get_count()+batch_size) // batch_size
 
         learning_rate = learning_rates[epoch%len(learning_rates)]
@@ -88,3 +90,4 @@ for net in range(nets_to_try):
             print("TRAINING result ", training_loss_sum)
             print("TESTING result ", testing_loss_sum)
             print("\n\n\n")
+
