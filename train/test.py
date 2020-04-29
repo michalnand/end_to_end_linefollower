@@ -9,17 +9,25 @@ root_path = "/Users/michal/dataset/background/"
 #root_path = "/home/michal/dataset/background/"
 
 def show(input, output):
-    image = Image.fromarray(input[0]*255)
-    img1 = ImageDraw.Draw(image)   
 
-    x0 = output[0]
-    y0 = image.height
-    x1 = output[1]
-    y1 = image.height//2
+    width    = input.shape[1]
+    height   = input.shape[0]
+    input_rgb = numpy.array([input, input, input])
 
-    shape = [(x0, y0), (x1, y1)] 
-    img1.line(shape, fill ="red", width = 4) 
+    image = Image.fromarray(output*255)
+    image = image.resize((width, height), Image.ANTIALIAS)
+    output_upscaled = numpy.array(image)/255.0
 
+
+    input_rgb[1] = 0.5*input_rgb[1] + 0.5*output_upscaled
+
+    result = input_rgb
+    result = numpy.rollaxis(result, 0, 2)
+    result = numpy.rollaxis(result, 2, 1)
+
+
+    result = (result*255).astype(dtype=numpy.uint8)
+    image = Image.fromarray(result)
     image.show()
 
 
@@ -41,13 +49,19 @@ prediction = model.forward(input)
 
 
 for i in range(batch_size):
-    input_np        = input[i].detach().numpy()
-    target_np       = numpy.clip((target[i].detach().numpy() + 1.0)/2.0, 0, 1)
-    prediction_np   = numpy.clip((prediction[i].detach().numpy() + 1.0)/2.0, 0, 1)
+    input_np        = input[i][0].detach().numpy()
+    
+    target_np       = numpy.clip(target[i][0].detach().numpy(), 0, 1)
+    prediction_np   = numpy.clip(prediction[i][0].detach().numpy(), 0, 1)
 
-    target_np       = numpy.round(size*target_np)
-    prediction_np   = numpy.round(size*prediction_np)
+    target_np       = numpy.round(target_np, 3)
+    prediction_np   = numpy.round(prediction_np, 3)
 
-    print(target_np, prediction_np)
+    print("target = ")
+    print(target_np, "\n")
+    print("target = ")
+    print(prediction_np, "\n")
+    print("\n\n\n\n")
+   
  
     show(input_np, prediction_np)

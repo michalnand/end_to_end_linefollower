@@ -1,72 +1,87 @@
 import numpy
 import cv2
 import torch
-from models.net_0.model import Model
+import time
+from models.net_1.model import Model
 
 
-width   = 96
-height  = 96
+model_input_width  = 96*4
+model_input_height = 96*4
 
-model = Model((1, height, width), 2)
-model.load("models/net_0/")
+model = Model((1, model_input_height, model_input_width), 2)
+model.load("models/net_1/")
 
 
 cap = cv2.VideoCapture(0)
 
 
-input_width = 640
-input_height = 480
+input_width        = 640
+input_height       = 480
+
+
 
 cap.set(cv2.CAP_PROP_FRAME_WIDTH,input_width)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT,input_height)
 
+def get_prediction(frame):
+    frame_grayscale   = numpy.array(cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY))
+    frame_resized     = cv2.resize(frame_grayscale, (model_input_width, model_input_height), interpolation = cv2.INTER_AREA)
+    
+    frame_normalised = numpy.clip(frame_resized/255.0, 0, 1)
 
-def get_net_input(image):
-        resized = cv2.resize(image, (width, height), interpolation = cv2.INTER_AREA)
-        input_np = numpy.array(resized)
+    frame_tensor = torch.zeros((1, 1, model_input_height, model_input_width)).to(model.device)
+    frame_tensor[0][0] = torch.from_numpy(frame_normalised).to(model.device)
 
-        '''
-        input_max = 255
-        input_min = 0
+    prediction_tensor  = model.forward(frame_tensor)
 
-        k = (1.0 - 0.0)/(input_max - input_min)
-        q = 1.0 - k*input_max
-
-        input_normalised = k*input_np + q
-        '''
-
-        input_normalised = numpy.clip(input_np/255.0, 0, 1)
-
-        result = torch.zeros((1, 1, height, width))
-        result[0][0] = torch.from_numpy(input_normalised)
-
-        return result
+    prediction_np      = numpy.clip(prediction_tensor[0][0].detach().to("cpu").numpy(), 0, 1)
 
 
+    return prediction_np
+
+
+fps = 0.0
+
+frame_count = 0
 
 while(True):
-    ret, frame = cap.read()
+    ret, frame      = cap.read()
 
-    img = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    time_start = time.time()
+    prediction_np   = get_prediction(frame)
+    time_stop = time.time()
+
+    prediction_np   = cv2.resize(prediction_np, (input_width, input_height), interpolation = cv2.INTER_LANCZOS4)
+
+    b, g, r = cv2.split(frame)
+
+    r = r/255.0
+    g = g/255.0
+    b = b/255.0
+
+    g = 0.5*g  + 0.5*prediction_np
+
+    r = (r*255).astype(dtype=numpy.uint8)
+    g = (g*255).astype(dtype=numpy.uint8)
+    b = (b*255).astype(dtype=numpy.uint8)
+
+    result = cv2.merge((b,g,r))
 
 
-    input_t = get_net_input(img)
+    '''
+    frame_count+= 1
+    if frame_count%20 == 0:
+        cv2.imwrite("images/frame_" + str(frame_count) + ".jpg", result)
+    '''
 
-    prediction_t = model.forward(input_t)
+    cv2.imshow('frame', result)
 
-    prediction_np = numpy.clip(prediction_t.detach().numpy(), -1.0, 1.0)
-    position_x0 = int(input_width*(prediction_np[0][0] + 1.0)/2.0)
-    position_x1 = int(input_height*(prediction_np[0][1] + 1.0)/2.0)
+    fps = 0.9*fps + 0.1*1.0/(time_stop - time_start)
+
+    print("FPS = ", round(fps, 1))
 
 
-    x0 = position_x0
-    y0 = input_height
 
-    x1 = position_x1
-    y1 = input_height//2
-
-    cv2.line(img, (x0, y0), (x1, y1), (255), 4)
-    cv2.imshow('frame', img)
     if cv2.waitKey(1) & 0xFF == 27:
         break
 
@@ -74,46 +89,3 @@ while(True):
 cap.release()
 cv2.destroyAllWindows()
 
-
-'''
-def show(input, output):
-    image = Image.fromarray((input[0] + 1.0)*127)
-    img1 = ImageDraw.Draw(image)   
-
-    shape = [(output[0], 0), (output[1], image.height)] 
-    img1.line(shape, fill ="red", width = 4) 
-
-    image.show()
-
-
-size = 96
-dataset = Dataset(size, size, 100, 100)
-
-
-model = Model(dataset.training.input_shape, dataset.training.outputs_count)
-
-model.load("models/net_0/")
-
-batch_size = 4
-
-
-
-input, target = dataset.testing.get_batch()
-
-prediction = model.forward(input)
-
-
-for i in range(batch_size):
-    input_np        = input[i].detach().numpy()
-    target_np       = target[i].detach().numpy()
-    prediction_np   = prediction[i].detach().numpy()
-
-    target_np       = numpy.round(size*target_np, 1)
-    prediction_np   = numpy.round(size*prediction_np, 1)
-
-    print(target_np)
-    print(prediction_np)
-    print("\n\n\n")
-
-    show(input_np, prediction_np)
-'''

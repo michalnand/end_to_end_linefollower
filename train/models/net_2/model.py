@@ -1,9 +1,17 @@
+
+
+
 import torch
 import torch.nn as nn
 
 class Flatten(nn.Module):
     def forward(self, input):
         return input.view(input.size(0), -1)
+
+class ActivationQuantizer(nn.Module):
+    def forward(self, input):
+        range = 127.0
+        return (torch.clamp(input, -1.0, 1.0)*range).round()/range
 
 class Model(torch.nn.Module):
     def __init__(self, input_shape, outputs_count):
@@ -24,19 +32,24 @@ class Model(torch.nn.Module):
  
         self.layers = [ 
                         nn.Conv2d(input_channels, 8, kernel_size=3, stride=2, padding=1),
+                        ActivationQuantizer(),
                         nn.ReLU(), 
 
                         nn.Conv2d(8, 8, kernel_size=3, stride=2, padding=1),
+                        ActivationQuantizer(),
                         nn.ReLU(), 
 
                         nn.Conv2d(8, 16, kernel_size=3, stride=2, padding=1),
+                        ActivationQuantizer(),
                         nn.ReLU(), 
 
                         nn.Conv2d(16, 32, kernel_size=3, stride=2, padding=1),
+                        ActivationQuantizer(),
                         nn.ReLU(), 
                        
                         nn.Dropout(0.01),
-                        nn.Conv2d(32, 1, kernel_size=1, stride=1, padding=0)
+                        nn.Conv2d(32, 1, kernel_size=1, stride=1, padding=0),
+                        ActivationQuantizer()
                     ]
 
         for i in range(len(self.layers)):

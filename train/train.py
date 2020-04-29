@@ -3,20 +3,20 @@ from models.net_1.model import Model
 import torch
 
 
-#root_path = "/Users/michal/dataset/background/"
-root_path = "/home/michal/dataset/background/"
+root_path = "/Users/michal/dataset/background/"
+#root_path = "/home/michal/dataset/background/"
 
-dataset = Dataset(96, 96, 50000, 5000, root_path)
+dataset = Dataset(96, 96, 10000, 1000, root_path)
 
  
 
 testing_loss_sum_best = None
 
-nets_to_try = 10
+nets_to_try = 1
 
 for net in range(nets_to_try):
 
-    epoch_count     = 50
+    epoch_count     = 20
     learning_rates  = [0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.00001, 0.00001]
 
     model = Model(dataset.training.input_shape, dataset.training.output_shape[0])
