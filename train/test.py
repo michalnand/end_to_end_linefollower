@@ -1,5 +1,5 @@
 from dataset import Dataset
-from models.net_0.model import Model
+from models.net_1.model import Model
 
 import numpy
 
@@ -29,7 +29,7 @@ dataset = Dataset(size, size, 100, 100, root_path)
 
 model = Model(dataset.training.input_shape, dataset.training.output_shape[0])
 
-model.load("models/net_0/")
+model.load("models/net_1/")
 
 batch_size = 10
 

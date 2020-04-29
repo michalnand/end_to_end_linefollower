@@ -8,7 +8,7 @@ root_path = "/home/michal/dataset/background/"
 
 dataset = Dataset(96, 96, 50000, 5000, root_path)
 
-
+ 
 
 testing_loss_sum_best = None
 
