@@ -82,7 +82,7 @@ for net in range(nets_to_try):
 
 
         if save_model:
-            model.save("models/net_0/")
+            model.save("models/net_1/")
 
             print("\n\n\n")
             print("net ID = ", net)
